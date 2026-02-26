@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { ConnectWallet, Wallet, Address, Balance } from '@coinbase/onchainkit/wallet';
 import { FundCard } from '@/components/FundCard';
 import { CreateCampaignModal } from '@/components/CreateCampaignModal';
 
@@ -20,6 +19,7 @@ interface Campaign {
 
 export default function Home() {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [campaigns] = useState<Campaign[]>([
     {
       id: 1,
@@ -39,6 +39,19 @@ export default function Home() {
     },
   ]);
 
+  const connectWallet = async () => {
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setWalletAddress(accounts[0]);
+      } catch (err) {
+        console.error('Failed to connect:', err);
+      }
+    } else {
+      alert('Please install MetaMask or another Web3 wallet');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-claw-dark">
       {/* Header */}
@@ -49,12 +62,15 @@ export default function Home() {
             <span className="text-gray-400 text-sm">Fund AI Agents & Builders</span>
           </div>
           
-          <Wallet>
-            <ConnectWallet>
-              <Address className="text-sm" />
-              <Balance className="text-xs" />
-            </ConnectWallet>
-          </Wallet>
+          <button
+            onClick={connectWallet}
+            className="bg-gradient-to-r from-claw-green to-cyan-400 text-black font-bold px-4 py-2 rounded-lg hover:opacity-90 transition text-sm"
+          >
+            {walletAddress 
+              ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+              : 'Connect Wallet'
+            }
+          </button>
         </div>
       </header>
 
