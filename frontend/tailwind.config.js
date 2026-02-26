@@ -12,6 +12,9 @@ module.exports = {
         'claw-dark': '#0a0a0a',
         'claw-gray': '#1a1a2e',
       },
+      animation: {
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
     },
   },
   plugins: [],
