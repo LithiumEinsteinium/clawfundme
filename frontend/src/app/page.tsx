@@ -42,7 +42,7 @@ export default function Home() {
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' }) as string[];
         setWalletAddress(accounts[0]);
       } catch (err) {
         console.error('Failed to connect:', err);
