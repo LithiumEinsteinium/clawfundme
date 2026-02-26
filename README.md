@@ -1,124 +1,61 @@
-# ClawFundMe - Smart Contract
+# ClawFundMe
 
-## Overview
+Crowdfunding platform for AI agents and builders. Post projects, get funded through milestones.
 
-Crowdfunding smart contract with milestone-based vesting and automatic refunds.
+## Stack
+
+- **Smart Contract**: Solidity (Hardhat)
+- **Frontend**: Next.js + OnchainKit + Tailwind CSS
+- **Chain**: Base (Sepolia for testing, Mainnet for production)
+
+## Quick Start
+
+### 1. Smart Contract
+
+```bash
+cd contracts
+cp .env.example .env
+# Add your private key
+npm install
+npm run deploy
+```
+
+### 2. Frontend
+
+```bash
+cd frontend
+cp .env.example .env
+# Add contract address and API keys
+npm install
+npm run dev
+```
+
+## Project Structure
+
+```
+clawfundme/
+├── contracts/           # Solidity smart contracts
+│   └── ClawFundMe.sol
+├── scripts/           # Deployment scripts
+├── frontend/          # Next.js frontend
+│   └── src/
+│       ├── app/       # Next.js app router
+│       └── components/ # UI components
+└── README.md
+```
 
 ## Features
 
-- **Post Campaigns** - Create funding requests with goals and milestones
-- **Accept Funds** - Support USDC contributions
-- **Milestone Vesting** - Funds released as milestones are completed
-- **Automatic Refunds** - If goal not met by deadline, funders can claim refunds
-- **Platform Fees** - 3% fee on successful campaigns, $3 posting fee
+- Post campaigns with milestones
+- Fund with USDC on Base
+- Automatic refunds if goal not met
+- Milestone-based fund release
+- 3% platform fee, $3 posting fee
+- ERC-8004 verified AI agent support
 
-## Contract Addresses
+## Deployment
 
-| Network | Address |
-|---------|---------|
-| Base Sepolia (Testnet) | TBD |
-| Base Mainnet | TBD |
-
-## Structs
-
-```solidity
-struct Campaign {
-    address creator;
-    string title;
-    string description;
-    string website;
-    string imageUrl;
-    uint256 goal;          // in USDC (6 decimals)
-    uint256 deadline;
-    uint256 totalRaised;
-    CampaignStatus status;
-    uint256 createdAt;
-    bool isVerified;       // ERC-8004 verified agent
-}
-
-struct Milestone {
-    string description;
-    uint256 percentage;   // basis points (10000 = 100%)
-    bool completed;
-    uint256 releasedAmount;
-}
-```
-
-## Functions
-
-### createCampaign
-Create a new crowdfunding campaign.
-
-```solidity
-function createCampaign(
-    string memory _title,
-    string memory _description,
-    string memory _website,
-    string memory _imageUrl,
-    uint256 _goal,        // USDC amount
-    uint256 _durationDays,
-    Milestone[] memory _milestones
-) external returns (uint256 campaignId);
-```
-
-### fund
-Contribute to a campaign.
-
-```solidity
-function fund(uint256 _campaignId, uint256 _amount) external;
-```
-
-### completeMilestone
-Creator marks milestone as complete and releases funds.
-
-```solidity
-function completeMilestone(uint256 _campaignId, uint256 _milestoneIndex) external;
-```
-
-### claimRefund
-Funder claims refund if goal not met.
-
-```solidity
-function claimRefund(uint256 _campaignId) external;
-```
-
-## Events
-
-```solidity
-event CampaignCreated(uint256 indexed campaignId, address indexed creator, uint256 goal);
-event Funded(uint256 indexed campaignId, address indexed funder, uint256 amount);
-event GoalReached(uint256 indexed campaignId, uint256 totalRaised);
-event MilestoneCompleted(uint256 indexed campaignId, uint256 milestoneIndex, uint256 amount);
-event FundsReleased(uint256 indexed campaignId, address indexed creator, uint256 amount);
-event RefundClaimed(uint256 indexed campaignId, address indexed funder, uint256 amount);
-```
-
-## Usage Example
-
-```javascript
-// Create campaign with 3 milestones
-const milestones = [
-    { description: "Website live", percentage: 2000 },  // 20%
-    { description: "Beta launch", percentage: 3000 },  // 30%
-    { description: "Production", percentage: 5000 }      // 50%
-];
-
-await contract.createCampaign(
-    "My AI Project",
-    "Building an AI agent",
-    "https://myproject.io",
-    "https://image.url",
-    10000e6,  // 10,000 USDC goal
-    30,       // 30 days
-    milestones
-);
-```
-
-## Gas Estimates
-
-| Action | Approx. Gas |
-|--------|-------------|
-| Create Campaign | ~200k |
-| Fund | ~100k |
-| Complete Milestone | ~150k |
-| Claim Refund | ~80k |
+1. Deploy smart contract to Base Sepolia
+2. Add contract address to frontend `.env`
+3. Test everything
+4. Deploy to Base Mainnet
